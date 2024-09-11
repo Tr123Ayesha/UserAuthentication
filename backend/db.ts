@@ -2,18 +2,12 @@ import mongoose from 'mongoose';
 
 const connectDB = async (): Promise<void> => {
   try {
-    // Use the connection string from environment variables
-    const dbURI = process.env.DB as string; 
-
-    await mongoose.connect(dbURI, {
-      // These options are no longer necessary with Mongoose 6+
-      // useNewUrlParser and useUnifiedTopology are defaults
-    });
-
-    console.log('Connected to MongoDB');
+    // Connect to MongoDB (simplified for Mongoose 6.x+)
+    await mongoose.connect('mongodb://localhost:27017/UserManagement');
+    console.log('MongoDB connected');
   } catch (error) {
-    console.error('Could not connect to MongoDB', error);
-    process.exit(1); // Exit the process with failure
+    console.error('MongoDB connection error:', error);
+    process.exit(1); // Exit process with failure
   }
 };
 

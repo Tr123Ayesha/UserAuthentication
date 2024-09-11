@@ -1,89 +1,85 @@
-import React from 'react';
-import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input } from 'antd';
+import React, { useState } from 'react';
+import { Button, Form, Input } from 'antd';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
-type FieldType = {
-  username?: string;
-  password?: string;
-  remember?: string;
-};
+const Login: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-  console.log('Success:', values);
-};
+  const onFinish = async (values: any) => {
+    setLoading(true);
 
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-  console.log('Failed:', errorInfo);
-};
+    try {
+      const response = await axios.post('http://localhost:5000/login', values);
 
-const LogIn: React.FC = () => (
-  <div 
-    style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh', 
-      width: '100vw', 
-    }}
-  >
+      // On success, store the JWT token in localStorage
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+      navigate('/detail');
+      alert('Login successful!');
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
     <div 
-      style={{
-        paddingTop: '20px',
+      style={{ 
         display: 'flex', 
-        flexDirection: 'column', 
         justifyContent: 'center', 
-        alignItems: 'center',
-        boxShadow: '4px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)', 
-        paddingBottom: '20px', 
-        paddingRight: '20px', 
-        paddingLeft: '20px', 
-        backgroundColor: '#fff'
+        alignItems: 'center', 
+        height: '100vh' 
       }}
     >
-      <p style={{fontSize:'24px',fontWeight:'600'}}>LogIn </p>
-      <Form
-        name="basic"
-        wrapperCol={{ span: 24 }}
-        style={{ maxWidth: 1000, width: '100%' }} 
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
+      <div 
+        style={{
+          paddingTop: '20px',
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          boxShadow: '4px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)', 
+          padding: '20px', 
+          backgroundColor: '#fff'
+        }}
       >
-       
-        <Form.Item<FieldType>
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+        <p style={{ fontSize: '24px', fontWeight: '600' }}>Login</p>
+
+        <Form
+          name="login"
+          wrapperCol={{ span: 40 }}
+          style={{ maxWidth: 400, width: '100%' }}
+          onFinish={onFinish}
+          autoComplete="off"
         >
-          <Input placeholder="Enter your username" />
-        </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[{ required: true, type: 'email', message: 'Please input a valid email!' }]}
+          >
+            <Input placeholder="Email" />
+          </Form.Item>
 
-        <Form.Item<FieldType>
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password placeholder="Enter your password" />
-        </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password placeholder="Password" />
+          </Form.Item>
 
-        {/* <Form.Item<FieldType>
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ span: 24 }}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item> */}
-
-        <Form.Item wrapperCol={{ span: 24 }}>
-          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-            Log In
-          </Button>
-        </Form.Item>
-
-        <p>Don't have an account? <a href="/signup">Sign up now!</a></p>
-
-      </Form>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loading}>
+              Log in
+            </Button>
+          </Form.Item>
+          <p>Dont,t have an account? <a href="/signup">Sign Up</a></p>
+        </Form>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-export default LogIn;
+export default Login;

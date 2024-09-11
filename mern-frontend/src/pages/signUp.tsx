@@ -48,7 +48,7 @@ const SignUp: React.FC = () => {
           name="signup"
           wrapperCol={{ span: 40 }}
           style={{ maxWidth: 1000, width: '100%' }} 
-          onFinish={onFinish} // Handle form submission with onFinish
+          onFinish={onFinish}
           autoComplete="off"
         >
           <Form.Item

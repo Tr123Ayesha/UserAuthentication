@@ -17,11 +17,6 @@ npm-debug.log*
 yarn-debug.log*
 *.log
 
-# Environment variables
-.env
 
-# IDE configs
-.vscode/
-.idea/
 
 
